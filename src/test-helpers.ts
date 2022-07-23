@@ -1,3 +1,4 @@
+import 'lean-test';
 import React from 'react';
 import TestRenderer, {
   ReactTestRenderer,
