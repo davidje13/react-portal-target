@@ -12,7 +12,7 @@ npm install --save react-portal-target
 
 ### Components
 
-```javascript
+```jsx
 const MyHeader = () => (
   <header>Welcome. <PortalTarget name="mytarget" /></header>
 );
@@ -46,7 +46,7 @@ cases. But if you need to be able to perform additional processing, you can use
 the hooks directly (it is also possible to mix-and-match the hooks and
 components APIs, for example using a hook target and a component source).
 
-```javascript
+```jsx
 const MyHeader = () => {
   const content = usePortalTarget('mytarget');
   if (!content) {
@@ -122,13 +122,13 @@ Defines an inlet for providing content. The content should be one of:
 
 The recommended way to provide multi-element content is to wrap it in a fragment:
 
-```javascript
+```jsx
 usePortalSource('my-thing', <>foo<strong>bar</strong></>);
 ```
 
 but it is also possible to provide it as an array:
 
-```javascript
+```jsx
 usePortalSource('my-thing', ['foo', <strong>bar</strong>]);
 ```
 
