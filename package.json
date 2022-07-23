@@ -1,0 +1,46 @@
+{
+  "name": "react-portal-target",
+  "version": "1.0.0",
+  "description": "React portals which target another location in the React component tree",
+  "files": [
+    "build/index.js",
+    "build/index.d.ts",
+    "README.md"
+  ],
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "format": "prettier --write .",
+    "test": "lean-test --preprocess tsc --parallel-suites && tsc && prettier --check ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidje13/react-portal-target.git"
+  },
+  "keywords": [
+    "react",
+    "portal",
+    "conduit",
+    "inlet",
+    "outlet",
+    "transclusion"
+  ],
+  "author": "David Evans",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidje13/react-portal-target/issues"
+  },
+  "homepage": "https://github.com/davidje13/react-portal-target#readme",
+  "peerDependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "@types/react": "18.x",
+    "@types/react-test-renderer": "18.x",
+    "lean-test": "2.x",
+    "prettier": "2.7.1",
+    "react": "18.x",
+    "react-test-renderer": "18.x",
+    "typescript": "4.7.x"
+  }
+}

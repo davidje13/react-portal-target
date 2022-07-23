@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "importsNotUsedAsValues": "error",
+    "target": "ES2016",
+    "module": "CommonJS",
+    "declaration": true,
+    "moduleResolution": "node",
+    "outDir": "build",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "jsx": "react"
+  },
+  "include": ["src/index.ts"]
+}
