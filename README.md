@@ -87,7 +87,7 @@ Renders as:
 
 ### `<PortalContext>`
 
-```jsx
+```xml
 <PortalContext>...</PortalContext>
 ```
 
@@ -99,11 +99,13 @@ If not used, a global context is used by default.
 
 ### `<PortalTarget>`
 
-```jsx
+```xml
 <PortalTarget name="my-target-name" />
+<PortalTarget name="my-target-name">default content</PortalTarget>
 ```
 
-Defines an outlet for displaying content.
+Defines an outlet for displaying content. You can optionally specify default
+content to display when no sources are linked to the target.
 
 The content will be wrapped in a React Fragment.
 
@@ -118,9 +120,12 @@ See also [`usePortalTarget`](#useportaltarget).
 
 ```jsx
 content = usePortalTarget(name)
+content = usePortalTarget(name, defaultContent)
 ```
 
-Defines an outlet for displaying content, returning the current content.
+Defines an outlet for displaying content, returning the current content. You
+can optionally specify default content to return when no sources are linked to
+the target.
 
 The content is returned exactly as it was provided, with no processing or
 wrapping.
@@ -130,7 +135,7 @@ See also [`PortalTarget`](#portaltarget).
 
 ### `<PortalSource>`
 
-```jsx
+```xml
 <PortalSource name="my-target-name">content</PortalSource>
 ```
 

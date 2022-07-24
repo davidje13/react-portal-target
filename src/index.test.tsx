@@ -64,6 +64,56 @@ describe('moving content', () => {
     expect(input, matchesStructure(expected));
   });
 
+  it('renders nothing if no sources are provided and no default content is set', () => {
+    const input = (
+      <PortalContext>
+        <PortalTarget name="foo" />
+      </PortalContext>
+    );
+
+    const expected = <></>;
+
+    expect(input, matchesStructure(expected));
+  });
+
+  it('renders default content if no sources are provided', () => {
+    const input = (
+      <PortalContext>
+        <PortalTarget name="foo">fallback</PortalTarget>
+      </PortalContext>
+    );
+
+    const expected = <>fallback</>;
+
+    expect(input, matchesStructure(expected));
+  });
+
+  it('ignores default content when a source is available', () => {
+    const input = (
+      <PortalContext>
+        <PortalSource name="foo">value</PortalSource>
+        <PortalTarget name="foo">fallback</PortalTarget>
+      </PortalContext>
+    );
+
+    const expected = <>value</>;
+
+    expect(input, matchesStructure(expected));
+  });
+
+  it('ignores default content when a source is available and null', () => {
+    const input = (
+      <PortalContext>
+        <PortalSource name="foo" children={null} />
+        <PortalTarget name="foo">fallback</PortalTarget>
+      </PortalContext>
+    );
+
+    const expected = <></>;
+
+    expect(input, matchesStructure(expected));
+  });
+
   it('supports multiple portals simultaneously', () => {
     const input = (
       <PortalContext>

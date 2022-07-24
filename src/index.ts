@@ -91,14 +91,17 @@ const usePortalSource = (name: string, content: ReactNode) => {
   );
 };
 
-const usePortalTarget = (name: string): ReactNode => {
+const usePortalTarget = (
+  name: string,
+  fallbackContent?: ReactNode,
+): ReactNode => {
   const ctx = useContext(PortalCtx);
   const [content, setContent] = useState<ReactNode>();
   useLayoutEffect(
     () => ctx.get(name).targets.store(setContent),
     [ctx, name, setContent],
   );
-  return content;
+  return content === undefined ? fallbackContent : content;
 };
 
 const PortalSource: FunctionComponent<{
@@ -109,8 +112,11 @@ const PortalSource: FunctionComponent<{
   return null;
 };
 
-const PortalTarget: FunctionComponent<{ name: string }> = ({ name }) =>
-  createElement(Fragment, {}, usePortalTarget(name));
+const PortalTarget: FunctionComponent<{
+  name: string;
+  children?: ReactNode;
+}> = ({ name, children }) =>
+  createElement(Fragment, {}, usePortalTarget(name, children));
 
 export {
   PortalContext,

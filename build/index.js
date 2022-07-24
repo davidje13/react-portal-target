@@ -71,11 +71,11 @@ const usePortalSource = (name, content) => {
     (0, react_1.useLayoutEffect)(() => ctx.get(name).sources.store(content), [ctx, name, content]);
 };
 exports.usePortalSource = usePortalSource;
-const usePortalTarget = (name) => {
+const usePortalTarget = (name, fallbackContent) => {
     const ctx = (0, react_1.useContext)(PortalCtx);
     const [content, setContent] = (0, react_1.useState)();
     (0, react_1.useLayoutEffect)(() => ctx.get(name).targets.store(setContent), [ctx, name, setContent]);
-    return content;
+    return content === undefined ? fallbackContent : content;
 };
 exports.usePortalTarget = usePortalTarget;
 const PortalSource = ({ name, children }) => {
@@ -83,5 +83,5 @@ const PortalSource = ({ name, children }) => {
     return null;
 };
 exports.PortalSource = PortalSource;
-const PortalTarget = ({ name }) => (0, react_1.createElement)(react_1.Fragment, {}, usePortalTarget(name));
+const PortalTarget = ({ name, children }) => (0, react_1.createElement)(react_1.Fragment, {}, usePortalTarget(name, children));
 exports.PortalTarget = PortalTarget;
