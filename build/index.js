@@ -1,27 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PortalTarget = exports.PortalSource = exports.usePortalTarget = exports.usePortalSource = exports.PortalContext = void 0;
+exports.usePortalTarget = exports.usePortalSource = exports.PortalTarget = exports.PortalSource = exports.PortalContext = void 0;
 const react_1 = require("react");
 class PrimaryTracker {
-    constructor(onChangePrimary) {
-        this.onChangePrimary = onChangePrimary;
+    constructor(onChange) {
+        this.onChange = onChange;
         this.values = new Map();
         this.primaryId = null;
-        this.values = new Map();
     }
     store(value) {
         const id = {};
         this.values.set(id, value);
         if (!this.primaryId) {
             this.primaryId = id;
-            this.onChangePrimary(value);
+            this.onChange();
         }
         return () => {
             this.values.delete(id);
             if (this.primaryId === id) {
-                const next = this.values.entries().next();
-                this.primaryId = next.done ? null : next.value[0];
-                this.onChangePrimary(next.done ? undefined : next.value[1]);
+                const next = this.values.keys().next();
+                this.primaryId = next.done ? null : next.value;
+                this.onChange();
             }
         };
     }
@@ -35,17 +34,17 @@ class PrimaryTracker {
 class Portal {
     constructor(destructor) {
         this.destructor = destructor;
-        this.sources = new PrimaryTracker(this.update.bind(this));
-        this.targets = new PrimaryTracker(this.update.bind(this));
-    }
-    update() {
-        const target = this.targets.get();
-        if (target) {
-            target(this.sources.get());
-        }
-        else if (this.sources.isEmpty()) {
-            this.destructor();
-        }
+        this.update = () => {
+            const target = this.targets.get();
+            if (target) {
+                target(this.sources.get());
+            }
+            else if (this.sources.isEmpty()) {
+                this.destructor();
+            }
+        };
+        this.sources = new PrimaryTracker(this.update);
+        this.targets = new PrimaryTracker(this.update);
     }
 }
 class PortalMap {
@@ -74,15 +73,15 @@ const usePortalSource = (name, content) => {
 exports.usePortalSource = usePortalSource;
 const usePortalTarget = (name) => {
     const ctx = (0, react_1.useContext)(PortalCtx);
-    const [content, setContent] = (0, react_1.useState)(undefined);
+    const [content, setContent] = (0, react_1.useState)();
     (0, react_1.useLayoutEffect)(() => ctx.get(name).targets.store(setContent), [ctx, name, setContent]);
     return content;
 };
 exports.usePortalTarget = usePortalTarget;
 const PortalSource = ({ name, children }) => {
-    (0, exports.usePortalSource)(name, children);
+    usePortalSource(name, children);
     return null;
 };
 exports.PortalSource = PortalSource;
-const PortalTarget = ({ name }) => (0, react_1.createElement)(react_1.Fragment, {}, (0, exports.usePortalTarget)(name));
+const PortalTarget = ({ name }) => (0, react_1.createElement)(react_1.Fragment, {}, usePortalTarget(name));
 exports.PortalTarget = PortalTarget;

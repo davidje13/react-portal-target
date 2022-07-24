@@ -15,25 +15,21 @@ class PrimaryTracker<T> {
   private readonly values = new Map<ID | null, T>();
   private primaryId: ID | null = null;
 
-  constructor(
-    private readonly onChangePrimary: (value: T | undefined) => void,
-  ) {
-    this.values = new Map();
-  }
+  constructor(private readonly onChange: () => void) {}
 
   store(value: T) {
     const id: ID = {};
     this.values.set(id, value);
     if (!this.primaryId) {
       this.primaryId = id;
-      this.onChangePrimary(value);
+      this.onChange();
     }
     return () => {
       this.values.delete(id);
       if (this.primaryId === id) {
-        const next = this.values.entries().next();
-        this.primaryId = next.done ? null : next.value[0];
-        this.onChangePrimary(next.done ? undefined : next.value[1]);
+        const next = this.values.keys().next();
+        this.primaryId = next.done ? null : next.value;
+        this.onChange();
       }
     };
   }
@@ -48,21 +44,21 @@ class PrimaryTracker<T> {
 }
 
 class Portal<T> {
-  public readonly sources = new PrimaryTracker<T>(this.update.bind(this));
-  public readonly targets = new PrimaryTracker<(v: T | undefined) => void>(
-    this.update.bind(this),
-  );
-
-  constructor(private readonly destructor: () => void) {}
-
-  private update() {
+  private readonly update = () => {
     const target = this.targets.get();
     if (target) {
       target(this.sources.get());
     } else if (this.sources.isEmpty()) {
       this.destructor();
     }
-  }
+  };
+
+  public readonly sources = new PrimaryTracker<T>(this.update);
+  public readonly targets = new PrimaryTracker<(v: T | undefined) => void>(
+    this.update,
+  );
+
+  constructor(private readonly destructor: () => void) {}
 }
 
 class PortalMap<T> {
@@ -80,14 +76,14 @@ class PortalMap<T> {
 
 const PortalCtx = createContext(new PortalMap<ReactNode>());
 
-export const PortalContext: FunctionComponent<{ children: ReactNode }> = ({
+const PortalContext: FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
   const [map] = useState(() => new PortalMap<ReactNode>());
   return createElement(PortalCtx.Provider, { value: map }, children);
 };
 
-export const usePortalSource = (name: string, content: ReactNode) => {
+const usePortalSource = (name: string, content: ReactNode) => {
   const ctx = useContext(PortalCtx);
   useLayoutEffect(
     () => ctx.get(name).sources.store(content),
@@ -95,9 +91,9 @@ export const usePortalSource = (name: string, content: ReactNode) => {
   );
 };
 
-export const usePortalTarget = (name: string): ReactNode => {
+const usePortalTarget = (name: string): ReactNode => {
   const ctx = useContext(PortalCtx);
-  const [content, setContent] = useState<ReactNode>(undefined);
+  const [content, setContent] = useState<ReactNode>();
   useLayoutEffect(
     () => ctx.get(name).targets.store(setContent),
     [ctx, name, setContent],
@@ -105,7 +101,7 @@ export const usePortalTarget = (name: string): ReactNode => {
   return content;
 };
 
-export const PortalSource: FunctionComponent<{
+const PortalSource: FunctionComponent<{
   name: string;
   children?: ReactNode;
 }> = ({ name, children }) => {
@@ -113,5 +109,13 @@ export const PortalSource: FunctionComponent<{
   return null;
 };
 
-export const PortalTarget: FunctionComponent<{ name: string }> = ({ name }) =>
+const PortalTarget: FunctionComponent<{ name: string }> = ({ name }) =>
   createElement(Fragment, {}, usePortalTarget(name));
+
+export {
+  PortalContext,
+  PortalSource,
+  PortalTarget,
+  usePortalSource,
+  usePortalTarget,
+};

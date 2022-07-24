@@ -77,7 +77,7 @@ Renders as:
 
 ## API
 
-### `PortalContext`
+### `<PortalContext>...</PortalContext>`
 
 Provides the context for passing data between components. If not used, a global
 context is used by default.
