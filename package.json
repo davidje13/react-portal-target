@@ -1,6 +1,6 @@
 {
   "name": "react-portal-target",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "React portals which target another location in the React component tree",
   "files": [
     "build/index.js",
